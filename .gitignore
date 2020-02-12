@@ -2,3 +2,4 @@
 /crawler/target
 **/*.rs.bk
 .idea/
+Cargo.lock
