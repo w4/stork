@@ -5,8 +5,8 @@
 pub mod filters;
 pub mod errors;
 
-pub use filters::Filters;
 pub use errors::StorkError;
+pub use filters::FilterSet;
 
 pub use url::Url;
 
@@ -24,7 +24,7 @@ use failure::ResultExt;
 /// A `Storkable` represents a website link which is traversable.
 pub struct Storkable {
     url: Url,
-    filters: Arc<Filters>,
+    filters: Arc<FilterSet>,
     client: Arc<reqwest::Client>,
     parent: Option<Arc<Storkable>>,
 }
@@ -32,7 +32,7 @@ impl Storkable {
     pub fn new(url: Url) -> Self {
         Self {
             url,
-            filters: Arc::new(Filters::default()),
+            filters: Arc::new(FilterSet::default()),
             client: Arc::new(
                 reqwest::Client::builder()
                     .user_agent(concat!(
@@ -47,7 +47,8 @@ impl Storkable {
         }
     }
 
-    pub fn with_filters(mut self, filters: Filters) -> Self {
+    /// Attaches a [FilterSet] to this, and child, [Storkable]s.
+    pub fn with_filters(mut self, filters: FilterSet) -> Self {
         self.filters = Arc::new(filters);
         self
     }
@@ -71,7 +72,7 @@ impl Storkable {
             while let Some(link) = links.next().await {
                 let link = link?;
 
-                if !this.filters.matches_url(&link) {
+                if !this.filters.matches_url(&link.url) {
                     continue;
                 }
 
@@ -86,7 +87,7 @@ impl Storkable {
     }
 }
 
-pub(crate) struct PageLink {
+struct PageLink {
     pub name: String,
     pub url: Url
 }

@@ -1,10 +1,14 @@
 use url::Url;
 
-#[derive(Clone)]
-pub struct Filters {
+/// List of filters that can be used to filter down results from a
+/// [Storkable](crate::Storkable). Once constructed, these can be
+/// attached using [Storkable::with_filters](crate::Storkable::with_filters).
+#[derive(Debug, Clone)]
+pub struct FilterSet {
     url: Option<Vec<UrlFilter>>,
 }
-impl Filters {
+impl FilterSet {
+    /// Filter results by a URL predicate.
     pub fn add_url_filter(mut self, filter: UrlFilter) -> Self {
         if self.url.is_none() {
             self.url = Some(Vec::new());
@@ -16,10 +20,11 @@ impl Filters {
         self
     }
 
-    pub(crate) fn matches_url(&self, link: &crate::PageLink) -> bool {
+    /// Check if this `Filters` matches the given `link`.
+    pub(crate) fn matches_url(&self, link: &Url) -> bool {
         if let Some(filters) = &self.url {
             for filter in filters.iter() {
-                if !filter.matches(&link.url) {
+                if !filter.matches(&link) {
                     return false;
                 }
             }
