@@ -1,0 +1,17 @@
+[package]
+name = "stork-cli"
+version = "0.1.0"
+authors = ["Jordan Doyle <jordan@doyle.la>"]
+edition = "2018"
+
+[dependencies]
+tokio = { version = "0.2", features = ["full"] }
+futures = "0.3"
+
+failure = ""
+
+digest = ""
+meowhash = ""
+generic-array = ""
+
+stork = { path = "crawler" }
