@@ -33,7 +33,16 @@ impl Storkable {
         Self {
             url,
             filters: Arc::new(Filters::default()),
-            client: Arc::new(reqwest::Client::builder().build().unwrap()),
+            client: Arc::new(
+                reqwest::Client::builder()
+                    .user_agent(concat!(
+                        env!("CARGO_PKG_NAME"),
+                        "/",
+                        env!("CARGO_PKG_VERSION")
+                    ))
+                    .build()
+                    .unwrap(),
+            ),
             parent: None,
         }
     }

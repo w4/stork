@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 select = ""
-reqwest = "0.10.1"
+reqwest = { version = "0.10.1", features = ["gzip"] }
 url = ""
 
 failure = ""
