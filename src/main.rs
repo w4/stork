@@ -7,22 +7,11 @@ async fn main() -> failure::Fallible<()> {
     let args: Vec<String> = std::env::args().collect();
     let url = args.get(1).expect("Expecting URL parameter").parse().unwrap();
 
-    let stream = stork::Storkable::new(url)
-//        .with_filters(
-//            stork::Filters::default()
-//                .add_url_filter(UrlFilter::new(
-//                    UrlFilterType::Domain,
-//                    "stackoverflow.blog".to_string()))
-//        )
-        .exec();
+    let stream = stork::Storkable::new(url).exec();
     pin_mut!(stream); // needed for iteration
 
     while let Some(link) = stream.next().await {
-        if let Err(err) = link {
-            eprintln!("{:#?}", err);
-            continue;
-        }
-        let link = link.unwrap();
+        let link = link?;
 
         println!("{}", link.url());
 
@@ -30,11 +19,7 @@ async fn main() -> failure::Fallible<()> {
         pin_mut!(stream); // needed for iteration
 
         while let Some(link) = stream.next().await {
-            if let Err(err) = link {
-                eprintln!("{:#?}", err);
-                continue;
-            }
-            println!("> {}", link.unwrap().url());
+            println!("> {}", link?.url());
         }
     }
 
