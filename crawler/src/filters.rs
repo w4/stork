@@ -33,25 +33,28 @@ impl FilterSet {
         true
     }
 }
-impl Default for Filters {
+impl Default for FilterSet {
+    /// Creates an empty filter set.
     fn default() -> Self {
-        Filters {
-            url: None,
-        }
+        FilterSet { url: None }
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum FilterType {
-    StartsWith, EndsWith, Contains
+    StartsWith,
+    EndsWith,
+    Contains,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum UrlFilterType {
-    Path(FilterType), Domain
+    Path(FilterType),
+    Domain,
+    Scheme,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct UrlFilter {
     kind: UrlFilterType,
     value: String,
@@ -76,12 +79,13 @@ impl UrlFilter {
             UrlFilterType::Path(FilterType::StartsWith) => url.path().starts_with(&self.value),
             UrlFilterType::Path(FilterType::EndsWith) => url.path().ends_with(&self.value),
             UrlFilterType::Path(FilterType::Contains) => url.path().contains(&self.value),
-            UrlFilterType::Domain => url.host_str().map_or(false, |v| v == &self.value)
+            UrlFilterType::Domain => url.host_str().map_or(false, |v| v == &self.value),
+            UrlFilterType::Scheme => url.scheme() == &self.value,
         };
 
         match self.negated {
             true => !matches,
-            false => matches
+            false => matches,
         }
     }
 }
