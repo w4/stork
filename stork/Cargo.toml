@@ -1,8 +1,9 @@
 [package]
 name = "stork"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Jordan Doyle <jordan@doyle.la>"]
 description = "simple futures-based library to recursively crawl sources in a search engine-like fashion"
+repository = "https://github.com/w4/stork"
 license = "WTFPL OR 0BSD"
 edition = "2018"
 

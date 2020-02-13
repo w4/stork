@@ -11,7 +11,7 @@
 //! *Note: you're probably not looking for this library on its own but
 //! a protocol implementation of it. See below for some first-party
 //! implementations:*
-//! - [stork_http](../../../stork_http/index.html)
+//! - [stork_http](../../../stork_http/)
 #![recursion_limit = "256"]
 
 #[macro_use]
