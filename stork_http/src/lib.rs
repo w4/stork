@@ -1,5 +1,5 @@
 //! # stork_http
-//! This is a [stork](../stork/index.html) implementation for the HTTP
+//! This is a [stork](../../../stork/index.html) implementation for the HTTP
 //! protocol and specifically HTML-based web scraping. Given an initial
 //! page to scrape, stork_http will find all indexable links on the page
 //! and yield them back to you - ready to scrape again in an instant

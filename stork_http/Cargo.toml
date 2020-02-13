@@ -2,20 +2,22 @@
 name = "stork_http"
 version = "0.0.1"
 authors = ["Jordan Doyle <jordan@doyle.la>"]
+description = "first-party stork implementation for HTML-based web scraping"
+license = "WTFPL OR 0BSD"
 edition = "2018"
 
 [dependencies]
-stork = { path = "../stork" }
+stork = { path = "../stork", version = "0.0.1" }
 
-select = ""
+select = "0.4.3"
 reqwest = { version = "0.10.1", features = ["gzip"] }
-url = ""
+url = "2.1.1"
 
-failure = ""
-failure_derive = ""
+failure = "0.1.6"
+failure_derive = "0.1.6"
 
-futures = "0.3"
-async-stream = ""
+futures = "0.3.4"
+async-stream = "0.2.1"
 
 [dev-dependencies]
 stork = { path = "../stork" }

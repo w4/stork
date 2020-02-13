@@ -2,16 +2,18 @@
 name = "stork"
 version = "0.0.1"
 authors = ["Jordan Doyle <jordan@doyle.la>"]
+description = "simple futures-based library to recursively crawl sources in a search engine-like fashion"
+license = "WTFPL OR 0BSD"
 edition = "2018"
 
 [dependencies]
-failure = ""
-failure_derive = ""
+failure = "0.1.6"
+failure_derive = "0.1.6"
 
-dyn-clone = ""
+dyn-clone = "1.0.1"
 
-futures = "0.3"
-async-stream = ""
+futures = "0.3.4"
+async-stream = "0.2.1"
 
 [dev-dependencies]
 tokio = { version = "0.2", features = ["full"] }
