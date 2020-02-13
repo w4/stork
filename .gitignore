@@ -1,5 +1,6 @@
 /target
 /stork*/target
+examples/**/target
 **/*.rs.bk
 .idea/
 Cargo.lock
