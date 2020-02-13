@@ -1,6 +1,6 @@
 # stork.rs
 
- [![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg?style=flat-square&logo=appveyor)](http://www.wtfpl.net/about/) ![https://docs.rs/stork/](https://docs.rs/stork/badge.svg) [![Downloads](https://img.shields.io/crates/d/stork.svg?style=flat-square&logo=appveyor)](https://crates.io/crates/stork)
+ [![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg?style=flat-square&logo=appveyor)](http://www.wtfpl.net/about/) [![Docs](https://docs.rs/stork/badge.svg)](https://docs.rs/stork/) [![Downloads](https://img.shields.io/crates/d/stork.svg?style=flat-square&logo=appveyor)](https://crates.io/crates/stork)
 
 `stork` is a simple futures-based library to recursively crawl
 sources in a search engine-like fashion. stork was designed from the
