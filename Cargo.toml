@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+  "stork",
+  "stork_http",
+
+  # Internal
+  "examples",
+]
