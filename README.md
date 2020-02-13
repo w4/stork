@@ -11,3 +11,5 @@ freedom to do BFS, DFS or any type of search they may so wish.
 View the docs for examples of how to use `stork`:
 - [stork](https://docs.rs/stork/)
 - [stork_http](https://docs.rs/stork_http/)
+
+or look in the [examples/](https://github.com/w4/stork/tree/master/examples) directory for some real-world examples!

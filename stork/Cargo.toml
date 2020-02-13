@@ -1,6 +1,6 @@
 [package]
 name = "stork"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Jordan Doyle <jordan@doyle.la>"]
 description = "simple futures-based library to recursively crawl sources in a search engine-like fashion"
 license = "WTFPL OR 0BSD"
