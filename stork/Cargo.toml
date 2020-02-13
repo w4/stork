@@ -1,0 +1,17 @@
+[package]
+name = "stork"
+version = "0.0.1"
+authors = ["Jordan Doyle <jordan@doyle.la>"]
+edition = "2018"
+
+[dependencies]
+failure = ""
+failure_derive = ""
+
+dyn-clone = ""
+
+futures = "0.3"
+async-stream = ""
+
+[dev-dependencies]
+tokio = { version = "0.2", features = ["full"] }

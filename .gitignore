@@ -1,5 +1,5 @@
 /target
-/crawler/target
+/stork*/target
 **/*.rs.bk
 .idea/
 Cargo.lock

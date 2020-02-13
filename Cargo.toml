@@ -14,4 +14,4 @@ digest = ""
 meowhash = ""
 generic-array = ""
 
-stork = { path = "crawler" }
+stork_http = { path = "stork_http" }
