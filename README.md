@@ -8,6 +8,11 @@ ground to have a simple API that is easy to use and can be reused
 across multiple protocols, yielding each result giving end users the
 freedom to do BFS, DFS or any type of search they may so wish.
 
+**The API is extremely unstable currently and will likely go through quite a few revisions before we get it stable, I'll keep on top of the changelogs but please keep this in mind when using the library.**
+
+>i am a heron. i haev a long neck and i pick fish out of the water w/ my beak. if you dont star this repo and 10 other rust repos u enjoy i will fly into your kitchen tonight and make a mess of your pots and pans
+
+
 View the docs for examples of how to use `stork`:
 - [stork](https://docs.rs/stork/)
 - [stork_http](https://docs.rs/stork_http/)
