@@ -55,7 +55,7 @@ pub struct Storkable<T: Unpin, C: StorkClient<T>> {
     parent: Option<Arc<Storkable<T, C>>>,
 }
 
-impl<'a, T: Unpin + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
+impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
     /// Instantiates a new [Storkable] from a T, storking can then
     /// begin on the given entrypoint using the [Storkable::exec] method.
     pub fn new(val: T) -> Self {
@@ -108,11 +108,24 @@ impl<'a, T: Unpin + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
         try_stream! {
             let mut children = this.client.run(this.val());
 
-            while let Some(child) = children.next().await {
+            'child: while let Some(child) = children.next().await {
                 let child = child.context(StorkError::ClientError)?;
 
                 if !this.filters.matches(&child) {
                     continue;
+                }
+
+                // ensure we're not going to cause a recursive loop by
+                // checking that the page we're about to yield isn't a
+                // parent of it
+                // TODO: should this happen before or after we try to
+                // TODO: match it against the filters
+                let mut current_parent = this.parent();
+                while let Some(parent) = current_parent {
+                    if parent.value == this.value {
+                        continue 'child;
+                    }
+                    current_parent = parent.parent();
                 }
 
                 yield Storkable {

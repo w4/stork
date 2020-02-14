@@ -105,6 +105,11 @@ impl Link {
         self.text.clone()
     }
 }
+impl PartialEq for Link {
+    fn eq(&self, other: &Self) -> bool {
+        self.url().as_str() == other.url().as_str()
+    }
+}
 impl std::str::FromStr for Link {
     type Err = failure::Error;
 
