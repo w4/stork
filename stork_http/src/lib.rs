@@ -88,6 +88,7 @@ use failure::ResultExt;
 use std::sync::Arc;
 
 pub use reqwest::Client as ReqwestClient;
+use std::hash::{Hash, Hasher};
 
 pub type HttpStorkable = Storkable<Link, HttpStorkClient>;
 
@@ -107,7 +108,12 @@ impl Link {
 }
 impl PartialEq for Link {
     fn eq(&self, other: &Self) -> bool {
-        self.url().as_str() == other.url().as_str()
+        self.url() == other.url()
+    }
+}
+impl Hash for Link {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.url().hash(state)
     }
 }
 impl std::str::FromStr for Link {
@@ -174,11 +180,12 @@ impl StorkClient<Link> for HttpStorkClient {
 
                 if let Some(href) = href {
                     // if this looks like a relative url append it to the root
-                    let href = if href.starts_with('/') || !href.contains("://") {
+                    let mut href = if href.starts_with('/') || !href.contains("://") {
                         root.join(href).context(StorkHttpError::UrlParseError)?
                     } else {
                         Url::parse(href).context(StorkHttpError::UrlParseError)?
                     };
+                    href.set_fragment(None);
 
                     yield Link {
                         url: href,

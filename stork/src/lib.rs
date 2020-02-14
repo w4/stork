@@ -27,10 +27,11 @@ use async_stream::try_stream;
 use futures::prelude::*;
 
 use std::pin::Pin;
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 
 use failure::Error;
 use failure::ResultExt;
+use std::hash::{Hash, Hasher};
 
 /// A [Storkable] represents a "thing" which is traversable ("storkable").
 ///
@@ -53,9 +54,10 @@ pub struct Storkable<T: Unpin + PartialEq + Hash, C: StorkClient<T>> {
     filters: FilterSet<T>,
     client: Arc<C>,
     parent: Option<Arc<Storkable<T, C>>>,
+    seen: Arc<RwLock<Vec<u64>>>,
 }
 
-impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
+impl<'a, T: Unpin + PartialEq + Hash + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
     /// Instantiates a new [Storkable] from a T, storking can then
     /// begin on the given entrypoint using the [Storkable::exec] method.
     pub fn new(val: T) -> Self {
@@ -64,6 +66,7 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
             filters: FilterSet::default(),
             client: Arc::new(C::default()),
             parent: None,
+            seen: Arc::new(RwLock::new(Vec::new())),
         }
     }
 
@@ -113,6 +116,22 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
         false
     }
 
+    /// Checks if this Storkable has seen this `value` before. If it
+    /// hasn't, this method will return false but any subsequent calls
+    /// with the same value will return true.
+    fn check_has_seen(&self, value: &T) -> bool {
+        let mut hasher = twox_hash::XxHash64::default();
+        value.hash(&mut hasher);
+        let hash = hasher.finish();
+
+        return if self.seen.read().unwrap().contains(&hash) {
+            true
+        } else {
+            self.seen.write().unwrap().push(hash);
+            false
+        };
+    }
+
     /// Start storking this [Storkable].
     ///
     /// Finds all the followable links on this [Storkable] and returns
@@ -131,6 +150,12 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
                     continue;
                 }
 
+                // ensure we haven't returned this link before from this
+                // Storkable
+                if this.check_has_seen(&child) {
+                    continue;
+                }
+
                 // ensure we're not going to cause a recursive loop by
                 // checking that the page we're about to yield isn't a
                 // parent of it
@@ -143,6 +168,7 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
                     client: Arc::clone(&this.client),
                     filters: this.filters.clone(),
                     parent: Some(Arc::clone(&this)),
+                    seen: Arc::new(RwLock::new(Vec::new())),
                 };
             }
         }
