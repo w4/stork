@@ -4,6 +4,8 @@ members = [
   "stork",
   "stork_http",
 
+  "storkcli",
+
   # Internal
   "examples",
 ]
