@@ -48,7 +48,7 @@ use failure::ResultExt;
 /// be called with a value of `T`, and is expected to return all the
 /// values of `T` that can be found on the given `T`.
 #[derive(Debug, Clone)]
-pub struct Storkable<T: Unpin, C: StorkClient<T>> {
+pub struct Storkable<T: Unpin + PartialEq + Hash, C: StorkClient<T>> {
     value: T,
     filters: FilterSet<T>,
     client: Arc<C>,
@@ -97,6 +97,22 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
         self.parent.as_ref().map(Arc::as_ref)
     }
 
+    /// Checks if this Storkable, or any parent Storkables have the same
+    /// value as the one given.
+    fn check_parent_is(&self, value: &T) -> bool {
+        // loop through all parents (starting with ourselves) to see if
+        // they happen to have the same value.
+        let mut current_parent = Some(self);
+        while let Some(parent) = current_parent {
+            if &parent.value == value {
+                return true;
+            }
+            current_parent = parent.parent();
+        }
+
+        false
+    }
+
     /// Start storking this [Storkable].
     ///
     /// Finds all the followable links on this [Storkable] and returns
@@ -108,7 +124,7 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
         try_stream! {
             let mut children = this.client.run(this.val());
 
-            'child: while let Some(child) = children.next().await {
+            while let Some(child) = children.next().await {
                 let child = child.context(StorkError::ClientError)?;
 
                 if !this.filters.matches(&child) {
@@ -118,14 +134,8 @@ impl<'a, T: Unpin + PartialEq + 'a, C: StorkClient<T> + 'a> Storkable<T, C> {
                 // ensure we're not going to cause a recursive loop by
                 // checking that the page we're about to yield isn't a
                 // parent of it
-                // TODO: should this happen before or after we try to
-                // TODO: match it against the filters
-                let mut current_parent = this.parent();
-                while let Some(parent) = current_parent {
-                    if parent.value == this.value {
-                        continue 'child;
-                    }
-                    current_parent = parent.parent();
+                if this.check_parent_is(&child) {
+                    continue;
                 }
 
                 yield Storkable {
