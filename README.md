@@ -18,3 +18,35 @@ View the docs for examples of how to use `stork`:
 - [stork_http](https://docs.rs/stork_http/)
 
 or look in the [examples/](https://github.com/w4/stork/tree/master/examples) directory for some real-world examples!
+
+## storkcli
+
+`storkcli` is built off the back of stork. It can be used to scrape websites for links using various
+filters, though basic right now `stork` gives us the ability to make this CLI as sophisticated as we like.
+
+Usage:
+
+```
+Usage: ./storkcli <url> [--max-depth <max-depth>]
+
+Link hunter with a little bit of magic.
+
+Options:
+  --max-depth       specifies how deep we should go from the origin, leave this
+                    value unspecified to recurse until there's nothing left to
+                    follow.
+  --help            display usage information
+```
+
+Example:
+
+```
+$ ./storkcli "https://doyle.la/" --max-depth 0
+↳ https://instagram.com/doyl_e
+↳ https://linkedin.com/in/jordanjdoyle
+↳ https://stackoverflow.com/users/2132800/jordan-doyle
+↳ https://last.fm/user/doyle-
+↳ https://github.com/w4
+↳ mailto:jordan@doyle.la
+↳ https://keybase.io/jrd
+```
